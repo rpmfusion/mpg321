@@ -1,6 +1,6 @@
 Name:           mpg321
 Version:        0.2.10.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Command line MPEG audio player
 
 Group:          Applications/Multimedia
@@ -65,6 +65,9 @@ fi
 
 
 %changelog
+* Sun Mar 29 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 0.2.10.4-3
+- rebuild for new F11 features
+
 * Sun Sep 14 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 0.2.10.4-2
 - rebuild
 
