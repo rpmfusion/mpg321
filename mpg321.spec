@@ -1,74 +1,103 @@
-Name:           mpg321
-Version:        0.2.10.4
-Release:        3%{?dist}
-Summary:        Command line MPEG audio player
+Name: mpg321
+Version: 0.2.10.6
+Release: 1%{?dist}
+Summary: Command line MPEG audio player (fixed-point calculations)
+Group: Applications/Multimedia
+License: GPLv2+
+URL: http://mpg321.sourceforge.net/
+Source0: http://ftp.debian.org/debian/pool/main/m/mpg321/%{name}_%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires: libao-devel
+BuildRequires: libmad-devel
+BuildRequires: libid3tag-devel
+BuildRequires: zlib-devel
+Requires(post): %{_sbindir}/alternatives
+Requires(postun): %{_sbindir}/alternatives
+Provides: mp3-cmdline = %{version}-%{release}
 
-Group:          Applications/Multimedia
-License:        GPLv2+
-URL:            http://mpg321.sourceforge.net/
-Source0:        http://ftp.debian.org/debian/pool/main/m/mpg321/%{name}_%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
-
-BuildRequires:  libao-devel
-BuildRequires:  libmad-devel
-BuildRequires:  libid3tag-devel
-BuildRequires:  zlib-devel
-Requires(post): /usr/sbin/update-alternatives
-Requires(postun): /usr/sbin/update-alternatives
-Provides:       mp3-cmdline
-Obsoletes:      mpg123
+# alternatives priority
+%define apriority 50
 
 %description
-mpg321 is a replacement for mpg123, a very popular command-line
-mp3 player. mpg123 is used for frontends, as an mp3 player and as an
-mp3 to wave file decoder (primarily for use with CD-recording
-software.) In all of these capacities, mpg321 can be used as a drop-in
-replacement for mpg123.
+mpg321 is a clone of the popular mpg123 command-line mp3 player. It should
+function as a drop-in replacement for mpg123 in many cases. While some of
+the functionality of mpg123 is not yet implemented, mpg321 should function 
+properly in most cases for most people, such as for frontends such as
+gqmpeg.
 
+mpg321 is based on the mad MPEG audio decoding library. It therefore is
+highly accurate, and also uses only fixed-point calculation, making it
+more efficient on machines without a floating-point unit. It is not as
+fast as mpg123 on systems which have a floating point unit.
 
 %prep
-%setup -q 
-
+%setup -q
 
 %build
-%configure --with-default-audio=alsa09
-make %{?_smp_mflags}
-
+%configure \
+	--disable-mpg123-symlink \
+	--with-default-audio=pulse
+%{__make} %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
-ln -s mpg321.1 $RPM_BUILD_ROOT%{_mandir}/man1/mpg123.1
+%{__rm} -rf %{buildroot}
+%{__make} DESTDIR=%{buildroot} INSTALL="install -p" install
 
+# prepare ghost alternatives
+%{__ln_s} -f %{name} %{buildroot}%{_bindir}/mpg123
+%{__ln_s} -f %{name} %{buildroot}%{_bindir}/mp3-cmdline
+%{__ln_s} -f %{name}.1 %{buildroot}%{_mandir}/man1/mpg123.1
 
 %clean
-rm -rf $RPM_BUILD_ROOT
-
+%{__rm} -rf %{buildroot}
 
 %post
-/usr/sbin/update-alternatives --install %{_bindir}/mp3-cmdline \
-    mp3-cmdline %{_bindir}/mpg321 40
+if [ "$1" -eq 2 ]; then
+	#clean old alternatives
+	%{_sbindir}/alternatives \
+		--remove mp3-cmdline %{_bindir}/mpg321 >/dev/null 2>&1
+fi
+manext=$(ls %{_mandir}/man1/%{name}.1* >/dev/null 2>&1| sed '2,$ d; s/^.*\././')
+[ "$manext" == ".1" ] && manext=""
+%{_sbindir}/alternatives \
+	--install %{_bindir}/mpg123 %{name}_binlink %{_bindir}/%{name} %{apriority} \
+	--slave %{_mandir}/man1/mpg123.1$manext %{name}_manlink %{_mandir}/man1/%{name}.1$manext \
+	--slave %{_bindir}/mp3-cmdline %{name}_mp3cmdline %{_bindir}/%{name} \
+	>/dev/null 2>&1 ||:
 
 %postun
-if [ $1 -eq 0 ] ; then
-    /usr/sbin/update-alternatives --remove mp3-cmdline %{_bindir}/mpg321
+if [ "$1" -eq 0 ]; then
+	%{_sbindir}/alternatives \
+		--remove %{name}_binlink %{_bindir}/%{name} >/dev/null 2>&1
 fi
 
-
-%files 
+%files
 %defattr(-,root,root,-)
 %doc AUTHORS BUGS ChangeLog COPYING HACKING NEWS README* THANKS TODO
-%{_bindir}/mpg321
-%{_bindir}/mpg123
-%{_mandir}/man1/mpg321.1*
-%{_mandir}/man1/mpg123.1*
-
+%ghost %{_bindir}/mp3-cmdline
+%{_bindir}/%{name}
+%ghost %{_bindir}/mpg123
+%doc %{_mandir}/man1/%{name}.1*
+%ghost %{_mandir}/man1/mpg123.1*
 
 %changelog
+* Mon Apr 06 2009 Luboš Staněk <stanekl@atlas.cz>  - 0.2.10.6-1
+- upgrade more than a year old package for several fixes
+- remove obsoletes to enable the real mpg123 package
+- rework alternatives to enable the real mpg123 package
+- use pulse as the default ao output
+- relevant Debian's changelog:
+  - Add large file support. (Closes: #152392).
+  - Avoid crashing on non mp3 files. (Closes: #458035).
+  - Don't scan file before playback. (Closes: #500102).
+  - Don't leave dangling symlink. (Closes: #227713).
+  - Make AM_PATH_AO XIPH_PATH_AO in configure.ac.
+  - Escape hyphens in manpage.
+
 * Sun Mar 29 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 0.2.10.4-3
 - rebuild for new F11 features
 
-* Sun Sep 14 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 0.2.10.4-2
+* Sun Sep 14 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 0.2.10.4-2
 - rebuild
 
 * Sat Oct 13 2007 Adrian Reber <adrian@lisas.de> - 0.2.10.4-1
@@ -91,6 +120,21 @@ fi
 
 * Tue Feb 28 2006 Andreas Bierfert <andreas.bierfert[AT]lowlatency.de>
 - add dist
+
+* Sun Sep 04 2005 Luboš Staněk <stanekl@atlas.cz> - 0.2.10-6.2
+- Spec update.
+
+* Wed Jul 20 2005 Luboš Staněk <stanekl@atlas.cz> - 0.2.10-6.1
+- update.
+
+* Mon Jul  4 2005 Matthias Saou <http://freshrpms.net/> 0.2.10-6
+- Include printf patch to fix CAN-2003-0969 (Jens Koerber).
+
+* Mon Jan 31 2005 Luboš Staněk <stanekl@atlas.cz> - 0.2.10-5.1
+- fc3 build.
+
+* Sun Sep 05 2004 Luboš Staněk <stanekl@atlas.cz> - 0.2.10-5.1
+- fc2 build.
 
 * Fri Jan  9 2004 Ville Skyttä <ville.skytta at iki.fi> - 0:0.2.10.3-0.lvn.1
 - Update to 0.2.10.3 (from Debian), fixes CAN-2003-0969.
