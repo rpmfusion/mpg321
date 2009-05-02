@@ -44,6 +44,7 @@ fast as mpg123 on systems which have a floating point unit.
 %{__make} DESTDIR=%{buildroot} INSTALL="install -p" install
 
 # prepare ghost alternatives
+# touch does not set the correct file mode bits 
 %{__ln_s} -f %{name} %{buildroot}%{_bindir}/mpg123
 %{__ln_s} -f %{name} %{buildroot}%{_bindir}/mp3-cmdline
 %{__ln_s} -f %{name}.1 %{buildroot}%{_mandir}/man1/mpg123.1
