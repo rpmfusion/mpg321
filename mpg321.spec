@@ -81,7 +81,7 @@ fi
 %ghost %{_mandir}/man1/mpg123.1*
 
 %changelog
-* Mon Apr 06 2009 Luboš Staněk <stanekl@atlas.cz>  - 0.2.10.6-1
+* Mon Apr 06 2009 Luboš Staněk <lubek@users.sourceforge.org>  - 0.2.10.6-1
 - upgrade more than a year old package for several fixes
 - remove obsoletes to enable the real mpg123 package
 - rework alternatives to enable the real mpg123 package
@@ -120,21 +120,6 @@ fi
 
 * Tue Feb 28 2006 Andreas Bierfert <andreas.bierfert[AT]lowlatency.de>
 - add dist
-
-* Sun Sep 04 2005 Luboš Staněk <stanekl@atlas.cz> - 0.2.10-6.2
-- Spec update.
-
-* Wed Jul 20 2005 Luboš Staněk <stanekl@atlas.cz> - 0.2.10-6.1
-- update.
-
-* Mon Jul  4 2005 Matthias Saou <http://freshrpms.net/> 0.2.10-6
-- Include printf patch to fix CAN-2003-0969 (Jens Koerber).
-
-* Mon Jan 31 2005 Luboš Staněk <stanekl@atlas.cz> - 0.2.10-5.1
-- fc3 build.
-
-* Sun Sep 05 2004 Luboš Staněk <stanekl@atlas.cz> - 0.2.10-5.1
-- fc2 build.
 
 * Fri Jan  9 2004 Ville Skyttä <ville.skytta at iki.fi> - 0:0.2.10.3-0.lvn.1
 - Update to 0.2.10.3 (from Debian), fixes CAN-2003-0969.
