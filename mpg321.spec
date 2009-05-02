@@ -1,6 +1,6 @@
 Name: mpg321
 Version: 0.2.10.6
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Command line MPEG audio player (fixed-point calculations)
 Group: Applications/Multimedia
 License: GPLv2+
@@ -58,7 +58,7 @@ if [ "$1" -eq 2 ]; then
 	%{_sbindir}/alternatives \
 		--remove mp3-cmdline %{_bindir}/mpg321 >/dev/null 2>&1
 fi
-manext=$(ls %{_mandir}/man1/%{name}.1* >/dev/null 2>&1| sed '2,$ d; s/^.*\././')
+manext=$(ls %{_mandir}/man1/%{name}.1* | sed '2,$ d; s/^.*\././')
 [ "$manext" == ".1" ] && manext=""
 %{_sbindir}/alternatives \
 	--install %{_bindir}/mpg123 %{name}_binlink %{_bindir}/%{name} %{apriority} \
@@ -82,6 +82,9 @@ fi
 %ghost %{_mandir}/man1/mpg123.1*
 
 %changelog
+* Sat May 02 2009 Adrian Reber <adrian@lisas.de> - 0.2.10.6-2
+- fix man page alternatives link creation
+
 * Mon Apr 06 2009 Luboš Staněk <lubek@users.sourceforge.org>  - 0.2.10.6-1
 - upgrade more than a year old package for several fixes
 - remove obsoletes to enable the real mpg123 package
