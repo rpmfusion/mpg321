@@ -1,6 +1,6 @@
 Name: mpg321
 Version: 0.2.12
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Command line MPEG audio player (fixed-point calculations)
 Group: Applications/Multimedia
 License: GPLv2+
@@ -82,7 +82,7 @@ fi
 %ghost %{_mandir}/man1/mpg123.1*
 
 %changelog
-* Wed Jan 05 2011 Adrian Reber <adrian@lisas.de> - 0.2.12-1
+* Wed Jan 05 2011 Adrian Reber <adrian@lisas.de> - 0.2.12-2
 - updated to 0.12.12 (#1582)
 
 * Wed Sep 29 2010 Adrian Reber <adrian@lisas.de> - 0.2.10.6-3
