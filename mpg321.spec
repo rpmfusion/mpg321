@@ -1,11 +1,11 @@
 Name: mpg321
-Version: 0.2.10.6
-Release: 3%{?dist}
+Version: 0.2.12
+Release: 1%{?dist}
 Summary: Command line MPEG audio player (fixed-point calculations)
 Group: Applications/Multimedia
 License: GPLv2+
 URL: http://mpg321.sourceforge.net/
-Source0: http://ftp.debian.org/debian/pool/main/m/mpg321/%{name}_%{version}.tar.gz
+Source0: http://downloads.sf.net/sourceforge/%{name}/%{name}-%{version}-1.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: libao-devel
 BuildRequires: libmad-devel
@@ -31,7 +31,7 @@ more efficient on machines without a floating-point unit. It is not as
 fast as mpg123 on systems which have a floating point unit.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}-1
 
 %build
 %configure \
@@ -82,6 +82,9 @@ fi
 %ghost %{_mandir}/man1/mpg123.1*
 
 %changelog
+* Wed Jan 05 2011 Adrian Reber <adrian@lisas.de> - 0.2.12-1
+- updated to 0.12.12 (#1582)
+
 * Wed Sep 29 2010 Adrian Reber <adrian@lisas.de> - 0.2.10.6-3
 - rebuilt for #1399 (not possible to install mpg321)
 
