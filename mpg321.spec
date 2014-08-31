@@ -1,6 +1,6 @@
 Name: mpg321
 Version: 0.2.13
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: Command line MPEG audio player (fixed-point calculations)
 Group: Applications/Multimedia
 License: GPLv2+
@@ -82,6 +82,9 @@ fi
 %ghost %{_mandir}/man1/mpg123.1*
 
 %changelog
+* Sun Aug 31 2014 Sérgio Basto <sergio@serjux.com> - 0.2.13-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Sun Mar 03 2013 Nicolas Chauvet <kwizart@gmail.com> - 0.2.13-4
 - Mass rebuilt for Fedora 19 Features
 
